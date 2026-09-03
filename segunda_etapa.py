@@ -134,7 +134,13 @@ def run():
 
     root = tk.Tk()
     root.title("InovaInstall - Instalação")
-    root.geometry("800x850")
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    window_width = min(800, max(480, screen_width - 80))
+    window_height = min(850, max(480, screen_height - 80))
+    root.geometry(f"{window_width}x{window_height}")
+    root.minsize(480, 480)
+    root.resizable(True, True)
     
     # Seção 1: Status de Instalação
     install_status_frame = tk.LabelFrame(root, text="Status da Instalação", padx=10, pady=10)
@@ -153,8 +159,8 @@ def run():
     info_frame.pack(fill=tk.X, padx=10, pady=10)
     
     tk.Label(info_frame, text="Nome do computador (opcional):").pack(anchor="w")
-    computer_name = tk.Entry(info_frame, width=40)
-    computer_name.pack(anchor="w", pady=(0, 10))
+    computer_name = tk.Entry(info_frame)
+    computer_name.pack(fill=tk.X, pady=(0, 10))
     tk.Label(info_frame, text="Em branco: manter o nome atual.", font=("Arial", 8)).pack(anchor="w")
     
     # Seção 3: Mensagens de Erro/Status
