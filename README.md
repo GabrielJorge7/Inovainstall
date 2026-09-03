@@ -41,10 +41,16 @@ O executável empacotado está disponível em `inovainstall/InovaInstall.exe`. E
 Para gerar um novo executável com PyInstaller:
 
 ```powershell
-pyinstaller InovaInstall.spec
+.\gerar_executavel.ps1
 ```
 
-O arquivo gerado será criado na pasta `dist`.
+O script gera ou substitui o arquivo `inovainstall/InovaInstall.exe` e mantém os executáveis auxiliares na mesma pasta. Para executar o script caso a política do PowerShell bloqueie scripts locais, use:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\gerar_executavel.ps1
+```
+
+Depois de alterar o código, execute o script, teste o executável e envie o arquivo atualizado ao GitHub.
 
 ## Fluxo de instalação
 
@@ -76,3 +82,4 @@ As versões do InovaFarma são consultadas nas releases do GitHub de `precisaosi
 | `preparacao.py` | Tela de preparação, download e persistência do estado. |
 | `segunda_etapa.py` | Tela e execução da instalação final. |
 | `InovaInstall.spec` | Configuração do empacotamento com PyInstaller. |
+| `gerar_executavel.ps1` | Gera o executável atualizado na pasta `inovainstall`. |
