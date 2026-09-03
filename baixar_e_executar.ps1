@@ -8,7 +8,12 @@ $temporaryExe = Join-Path $env:TEMP ("InovaInstall-" + [Guid]::NewGuid() + ".exe
 try {
     New-Item -ItemType Directory -Path $distributionDirectory -Force | Out-Null
     Write-Host "Baixando a versão mais recente do InovaInstall..."
-    Invoke-WebRequest -Uri $downloadUrl -OutFile $temporaryExe -UseBasicParsing
+    $cacheBustedUrl = "$downloadUrl?download=$([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds())"
+    Invoke-WebRequest `
+        -Uri $cacheBustedUrl `
+        -Headers @{ "Cache-Control" = "no-cache" } `
+        -OutFile $temporaryExe `
+        -UseBasicParsing
 
     if (-not (Test-Path $temporaryExe) -or (Get-Item $temporaryExe).Length -lt 1MB) {
         throw "O download do executável não foi concluído corretamente."

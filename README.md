@@ -42,7 +42,7 @@ O executável empacotado está disponível em `inovainstall/InovaInstall.exe`. E
 
 [Baixar a versão mais recente do InovaInstall](https://github.com/GabrielJorge7/Inovainstall/raw/refs/heads/main/inovainstall/InovaInstall.exe)
 
-O link sempre aponta para o executável que está na branch `main`. Depois de uma nova publicação, basta abrir o mesmo link novamente.
+O link sempre aponta para o executável que está na branch `main`. Depois de uma nova publicação, basta abrir o mesmo link novamente. O lançador automático adiciona uma validação de cache para buscar a versão atualizada.
 
 ### Baixar e executar automaticamente
 
