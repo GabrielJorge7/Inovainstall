@@ -46,13 +46,15 @@ O link sempre aponta para o executável que está na branch `main`. Depois de um
 
 ### Baixar e executar automaticamente
 
-Para baixar a versão mais recente a cada uso, execute no PowerShell:
+Para baixar a versão mais recente a cada uso, dê duplo clique em `baixar_e_executar.cmd` ou execute no PowerShell:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\baixar_e_executar.ps1
 ```
 
-O script baixa uma cópia temporária, inicia o programa e remove o arquivo ao final. É necessário ter acesso à internet.
+O script baixa primeiro uma cópia temporária, atualiza o executável local, inicia o programa e remove apenas o arquivo temporário. É necessário ter acesso à internet.
+
+O executável atualizado fica salvo em `inovainstall/InovaInstall.exe`. O arquivo `.cmd` também mantém a janela aberta quando ocorre algum erro, facilitando o diagnóstico.
 
 Para gerar um novo executável com PyInstaller:
 
@@ -100,3 +102,4 @@ As versões do InovaFarma são consultadas nas releases do GitHub de `precisaosi
 | `InovaInstall.spec` | Configuração do empacotamento com PyInstaller. |
 | `gerar_executavel.ps1` | Gera o executável atualizado na pasta `inovainstall`. |
 | `baixar_e_executar.ps1` | Baixa e executa sempre a versão mais recente do GitHub. |
+| `baixar_e_executar.cmd` | Inicia o download automático por duplo clique. |
