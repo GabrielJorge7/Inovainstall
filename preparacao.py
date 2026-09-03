@@ -389,7 +389,7 @@ def run():
         root, text="sqldev2016", variable=sql_variant, value="sqldev2016"
     ).grid(row=9, column=1, sticky="w")
 
-    restart = tk.BooleanVar(value=True)
+    restart = tk.BooleanVar(value=False)
     tk.Checkbutton(
         root, 
         text="Reiniciar o computador após a instalação",

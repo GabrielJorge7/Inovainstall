@@ -9,7 +9,7 @@ Aplicativo Windows para preparar e executar a instalação do InovaFarma. A ferr
 - Instalação no modo Servidor ou Terminal.
 - Seleção da variante SQL (`sql2016` ou `sqldev2016`) para instalações de servidor.
 - Definição opcional do nome do computador.
-- Reinício automático para continuar a instalação após a preparação.
+- Opção de reinício automático para continuar a instalação após a preparação.
 - Exibição do status e dos logs das etapas executadas.
 
 ## Requisitos
@@ -27,7 +27,7 @@ Na pasta do projeto, execute:
 python main.py
 ```
 
-O programa abre a tela de preparação. Informe os dados desejados e clique em **Preparar e continuar**. Quando a preparação terminar, a tela de instalação será aberta automaticamente, a menos que o reinício esteja habilitado.
+O programa abre a tela de preparação. Informe os dados desejados e clique em **Preparar e continuar**. O reinício vem desmarcado por padrão; quando a preparação terminar, a tela de instalação será aberta automaticamente. Se o reinício for marcado, o Windows reiniciará e a instalação continuará depois.
 
 ## Executável
 
