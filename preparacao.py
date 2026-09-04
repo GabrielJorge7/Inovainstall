@@ -120,8 +120,64 @@ def latest_preview_version():
     if not previews:
         raise RuntimeError("Nenhuma versão Preview disponível foi encontrada.")
 
-    release = max(previews, key=lambda item: item.get("published_at", ""))
+    release = max(
+        previews,
+        key=lambda item: item.get("published_at") or item.get("created_at", ""),
+    )
     return release["tag_name"].removeprefix("v")
+
+
+def release_download_details(version, release_channel):
+    if version:
+        tag = version if version.startswith("v") else f"v{version}"
+        request = urllib.request.Request(
+            f"https://api.github.com/repos/precisaosistemas/inovafarma/releases/tags/{tag}",
+            headers={"Accept": "application/vnd.github+json", "User-Agent": APP_NAME},
+        )
+        with urllib.request.urlopen(request, timeout=30) as response:
+            release = json.load(response)
+    elif release_channel == "preview":
+        request = urllib.request.Request(
+            RELEASES_URL,
+            headers={"Accept": "application/vnd.github+json", "User-Agent": APP_NAME},
+        )
+        with urllib.request.urlopen(request, timeout=30) as response:
+            releases = json.load(response)
+        previews = [
+            item
+            for item in releases
+            if item.get("prerelease")
+            and not item.get("draft")
+            and item.get("assets")
+        ]
+        if not previews:
+            raise RuntimeError("Nenhuma versão Preview disponível foi encontrada.")
+        release = max(
+            previews,
+            key=lambda item: item.get("published_at") or item.get("created_at", ""),
+        )
+    else:
+        request = urllib.request.Request(
+            "https://api.github.com/repos/precisaosistemas/inovafarma/releases/latest",
+            headers={"Accept": "application/vnd.github+json", "User-Agent": APP_NAME},
+        )
+        with urllib.request.urlopen(request, timeout=30) as response:
+            release = json.load(response)
+
+    executable = next(
+        (
+            asset
+            for asset in release.get("assets", [])
+            if asset.get("name", "").lower().endswith(".exe")
+        ),
+        None,
+    )
+    if not executable:
+        raise RuntimeError(
+            f"Nenhum executável foi encontrado na release {release.get('tag_name', version)}."
+        )
+
+    return release["tag_name"], executable["browser_download_url"], executable["name"]
 
 
 def latest_stable_version():
@@ -138,25 +194,27 @@ def download_inovafarma(version, release_channel, status, states, errors):
     name = "inovafarma.exe"
     log_path = os.path.join(LOG_DIR, f"{name}.log")
     try:
-        if not version:
-            version = (
-                latest_preview_version()
-                if release_channel == "preview"
-                else latest_stable_version()
-            )
-        request = urllib.request.Request(
-            f"https://github.com/precisaosistemas/inovafarma/releases/download/"
-            f"v{version}/inovafarma-{version}.exe",
-            headers={"User-Agent": APP_NAME},
+        tag_name, download_url, asset_name = release_download_details(
+            version, release_channel
         )
-        destination = os.path.join(os.environ.get("TEMP", r"C:\TEMP"), f"inovafarma-{version}.exe")
+        request = urllib.request.Request(
+            download_url,
+            headers={
+                "Accept": "application/octet-stream",
+                "User-Agent": APP_NAME,
+            },
+        )
+        destination = os.path.join(os.environ.get("TEMP", r"C:\TEMP"), asset_name)
         with urllib.request.urlopen(request, timeout=60) as response, open(
             destination, "wb"
         ) as output:
             while chunk := response.read(1024 * 1024):
                 output.write(chunk)
         with open(log_path, "w", encoding="utf-8") as log_file:
-            log_file.write(f"Download concluído: {destination}\nCódigo de saída: 0\n")
+            log_file.write(
+                f"Download concluído: {destination}\n"
+                f"Release: {tag_name}\nCódigo de saída: 0\n"
+            )
         states[name] = "concluído"
         status(name, "concluído")
     except Exception as error:
