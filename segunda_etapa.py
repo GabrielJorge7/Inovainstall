@@ -134,6 +134,7 @@ def run():
 
     root = tk.Tk()
     root.title("InovaInstall - Instalação")
+    root.iconbitmap(resource_path("logo.ico"))
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
     window_width = min(800, max(480, screen_width - 80))
