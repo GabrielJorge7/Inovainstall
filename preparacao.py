@@ -239,6 +239,29 @@ def continue_to_installation(root):
     run()
 
 
+def skip_to_installation(
+    version_entry,
+    option,
+    sql_variant,
+    restart,
+    root,
+):
+    try:
+        save_state(
+            {
+                "version": version_entry.get().strip(),
+                "sql_variant": sql_variant.get(),
+                "option": option.get(),
+                "restart": restart.get(),
+            }
+        )
+        continue_to_installation(root)
+    except OSError as error:
+        messagebox.showerror(
+            "Erro", f"Não foi possível iniciar a instalação diretamente:\n{error}"
+        )
+
+
 def execute(
     version,
     computer_name,
@@ -486,4 +509,17 @@ def run():
         ),
     )
     button.grid(row=12, column=0, columnspan=2, padx=10, pady=15)
+
+    direct_button = tk.Button(
+        root,
+        text="Ir direto para instalação",
+        command=lambda: skip_to_installation(
+            version_entry,
+            option,
+            sql_variant,
+            restart,
+            root,
+        ),
+    )
+    direct_button.grid(row=13, column=0, columnspan=2, padx=10, pady=(0, 15))
     root.mainloop()
